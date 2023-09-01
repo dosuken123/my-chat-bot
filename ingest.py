@@ -45,8 +45,12 @@ def ingest_docs():
     """Get documents from web pages."""
 
     urls = [
-        "https://api.python.langchain.com/en/latest/api_reference.html#module-langchain",
-        "https://python.langchain.com/docs/get_started", 
+        # "https://www.streetfighter.com/6/character", # OK
+        # "https://www.streetfighter.com/6/character/rashid/frame",
+        "https://wiki.supercombo.gg/w/Street_Fighter_6" # OK
+        # https://streetfighter.fandom.com/wiki/Juri_Han#Biography
+        # "https://api.python.langchain.com/en/latest/api_reference.html#module-langchain",
+        # "https://python.langchain.com/docs/get_started", 
         # "https://python.langchain.com/docs/use_cases",
         # "https://python.langchain.com/docs/integrations",
         # "https://python.langchain.com/docs/modules", 
@@ -57,10 +61,14 @@ def ingest_docs():
     ]
 
     documents = []
+    # extractor = lambda x: Soup(x, "lxml").text
+    extractor = lambda x: Soup(x, "html").text
     for j, url in enumerate(urls):
-        max_depth = 2 if j == 0 else 10
-        loader = RecursiveUrlLoader(url=url, max_depth=max_depth, extractor=lambda x: Soup(x, "lxml").text, prevent_outside=True)
+        # max_depth = 2 if j == 0 else 10
+        max_depth = 2
+        loader = RecursiveUrlLoader(url=url, max_depth=max_depth, extractor=extractor, prevent_outside=True)
         temp_docs = loader.load()           
+        # print(f"temp_docs: {temp_docs}")
         documents += temp_docs
         print("Loaded", len(temp_docs), "documents from", url)
     
@@ -74,8 +82,8 @@ def ingest_docs():
     docs_transformed = text_splitter.split_documents(docs_transformed)
     print('after splitting', len(docs_transformed))
     
-    repo_docs = ingest_repo()
-    docs_transformed += repo_docs
+    # repo_docs = ingest_repo()
+    # docs_transformed += repo_docs
         
     # OPTION TO PICKLE
     print("pickle.dumping..")
@@ -90,13 +98,15 @@ def ingest_docs():
     client.schema.delete_class("LangChain_newest_idx") # delete the class if it already exists
 
     embeddings = OpenAIEmbeddings(chunk_size=200) # rate limit
+    weav = Weaviate(client=client, index_name="LangChain_newest_idx", text_key="text", embedding=embeddings, by_text=False)
 
     batch_size = 100 # to handle batch size limit 
     for i in range(0, len(docs_transformed), batch_size):
         batch = docs_transformed[i:i+batch_size]
         print(f"i: {i}")
         # import pdb; pdb.set_trace()
-        Weaviate.add_documents(batch, embeddings, client=client, by_text=False, index_name="LangChain_newest_idx")
+        weav.add_documents(batch)
+        # Weaviate.add_documents(batch, embeddings, client=client, by_text=False, index_name="LangChain_newest_idx")
 
     print("LangChain now has this many vectors", client.query.aggregate("LangChain_newest_idx").with_meta_count().do())
     
