@@ -141,3 +141,6 @@ langchain.readthedocs.io/
 
 bin/
 pyvenv.cfg
+
+docs_transformed.pkl
+test_repo/

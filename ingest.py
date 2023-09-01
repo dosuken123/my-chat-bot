@@ -13,6 +13,9 @@ from langchain.document_transformers import Html2TextTransformer
 from langchain.text_splitter import Language
 from langchain.document_loaders.generic import GenericLoader
 from langchain.document_loaders.parsers import LanguageParser
+from dotenv import load_dotenv
+
+load_dotenv()
 
 WEAVIATE_URL=os.environ["WEAVIATE_URL"]
 WEAVIATE_API_KEY=os.environ["WEAVIATE_API_KEY"]
@@ -44,13 +47,13 @@ def ingest_docs():
     urls = [
         "https://api.python.langchain.com/en/latest/api_reference.html#module-langchain",
         "https://python.langchain.com/docs/get_started", 
-        "https://python.langchain.com/docs/use_cases",
-        "https://python.langchain.com/docs/integrations",
-        "https://python.langchain.com/docs/modules", 
-        "https://python.langchain.com/docs/guides",
-        "https://python.langchain.com/docs/ecosystem",
-        "https://python.langchain.com/docs/additional_resources",
-        "https://python.langchain.com/docs/community",
+        # "https://python.langchain.com/docs/use_cases",
+        # "https://python.langchain.com/docs/integrations",
+        # "https://python.langchain.com/docs/modules", 
+        # "https://python.langchain.com/docs/guides",
+        # "https://python.langchain.com/docs/ecosystem",
+        # "https://python.langchain.com/docs/additional_resources",
+        # "https://python.langchain.com/docs/community",
     ]
 
     documents = []
@@ -75,6 +78,7 @@ def ingest_docs():
     docs_transformed += repo_docs
         
     # OPTION TO PICKLE
+    print("pickle.dumping..")
     import pickle
     with open('docs_transformed.pkl', 'wb') as f:
         pickle.dump(docs_transformed, f)
@@ -90,6 +94,8 @@ def ingest_docs():
     batch_size = 100 # to handle batch size limit 
     for i in range(0, len(docs_transformed), batch_size):
         batch = docs_transformed[i:i+batch_size]
+        print(f"i: {i}")
+        # import pdb; pdb.set_trace()
         Weaviate.add_documents(batch, embeddings, client=client, by_text=False, index_name="LangChain_newest_idx")
 
     print("LangChain now has this many vectors", client.query.aggregate("LangChain_newest_idx").with_meta_count().do())

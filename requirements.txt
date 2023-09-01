@@ -14,3 +14,6 @@ libmagic
 tiktoken
 weaviate-client
 anthropic
+python-dotenv
+GitPython
+html2text
