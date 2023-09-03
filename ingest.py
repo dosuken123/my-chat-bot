@@ -47,7 +47,7 @@ def ingest_docs():
     urls = [
         # "https://www.streetfighter.com/6/character", # OK
         # "https://www.streetfighter.com/6/character/rashid/frame",
-        "https://wiki.supercombo.gg/w/Street_Fighter_6" # OK
+        "https://wiki.supercombo.gg/w/Street_Fighter_6/Luke" # OK
         # https://streetfighter.fandom.com/wiki/Juri_Han#Biography
         # "https://api.python.langchain.com/en/latest/api_reference.html#module-langchain",
         # "https://python.langchain.com/docs/get_started", 
@@ -59,14 +59,22 @@ def ingest_docs():
         # "https://python.langchain.com/docs/additional_resources",
         # "https://python.langchain.com/docs/community",
     ]
+    
+    exclude_dirs = [
+        "Frame_data", "Combos", "Resources", "Matchups", "Strategy", "Data"
+    ]
 
     documents = []
-    # extractor = lambda x: Soup(x, "lxml").text
-    extractor = lambda x: Soup(x, "html").text
+    extractor = lambda x: Soup(x, "lxml").text
     for j, url in enumerate(urls):
         # max_depth = 2 if j == 0 else 10
-        max_depth = 2
-        loader = RecursiveUrlLoader(url=url, max_depth=max_depth, extractor=extractor, prevent_outside=True)
+        max_depth = 1
+        loader = RecursiveUrlLoader(url=url,
+                                    max_depth=max_depth,
+                                    extractor=extractor,
+                                    prevent_outside=True,
+                                    ensure_trailing_slash=False,
+                                    exclude_dirs=exclude_dirs)
         temp_docs = loader.load()           
         # print(f"temp_docs: {temp_docs}")
         documents += temp_docs
@@ -77,19 +85,24 @@ def ingest_docs():
     html2text = Html2TextTransformer()
     docs_transformed = html2text.transform_documents(documents)
     
+    print("Loaded", len(documents), "documents from all URLs")
+    
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
     print('before splitting', len(docs_transformed))
     docs_transformed = text_splitter.split_documents(docs_transformed)
     print('after splitting', len(docs_transformed))
     
+    print('Debuging... end')
+    return
+
     # repo_docs = ingest_repo()
     # docs_transformed += repo_docs
         
-    # OPTION TO PICKLE
-    print("pickle.dumping..")
-    import pickle
-    with open('docs_transformed.pkl', 'wb') as f:
-        pickle.dump(docs_transformed, f)
+    # # OPTION TO PICKLE
+    # print("pickle.dumping..")
+    # import pickle
+    # with open('docs_transformed.pkl', 'wb') as f:
+    #     pickle.dump(docs_transformed, f)
         
     # with open('docs_transformed.pkl', 'rb') as f:
     #     docs_transformed = pickle.load(f)
