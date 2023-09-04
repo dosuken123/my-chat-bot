@@ -14,7 +14,7 @@ class Load:
     pass
     
   def execute(self) -> None:
-    source = self._sources[0]
+    source = self._sources()[0]
     
     response = requests.get(source)
     
@@ -22,6 +22,8 @@ class Load:
       print("Successful response")
     else:
       print("Requst failed with a status code: ", response.status_code)
+    
+    return response.content
   
   def _sources(self):
-    ["https://wiki.supercombo.gg/w/Street_Fighter_6/Luke"]
+    return ["https://wiki.supercombo.gg/w/Street_Fighter_6/Luke"]

@@ -10,3 +10,9 @@
 - [ ] Optimize the document loading part - Currently, the documents parses seem skewed.
 - [ ] Enable Coplilot
 - [ ] Publish the chat app
+
+
+## Running tests
+
+`python -m pytest tests/`
+`python -m pytest --pdb  tests/`
