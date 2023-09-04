@@ -17,3 +17,4 @@ anthropic
 python-dotenv
 GitPython
 html2text
+pytest
