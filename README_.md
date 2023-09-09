@@ -1,16 +1,25 @@
 - [x] Run chat-langchain locally
 - [-] Use Langchain from the fork (Otherwise I can't track the changes in LangChain)
 - [x] Understand RAG https://python.langchain.com/docs/modules/data_connection/
-- [ ] Define RAG Classes
-  - [ ] Load 
-  - [ ] Transform
-  - [ ] Embed
-  - [ ] Store
-  - [ ] Retrieve
-- [ ] Optimize the document loading part - Currently, the documents parses seem skewed.
-- [ ] Enable Coplilot
-- [ ] Publish the chat app
-
+- [x] Use collabo too
+- [x] Define Ingest SF6 Class
+  - [x] Convert HTML to nice markdown
+  - [x] Split Markdown
+  - [x] Check how embedding is computed. Are headers used? => Only `text`. Metadata is not used.
+  - [x] Test including metadata into the text.
+  - [x] Test top 3 similarily search, not just one.
+- [x] Define Query SF6 Class
+  - [x] Prepare prompt
+  - [x] Infer 
+- [x] Optimize the document loading part - Currently, the documents parses seem skewed.
+- [x] Enable Coplilot
+- [-] Apply for LangSmmith
+- [ ] Read https://docs.langchain.com/docs/
+- [ ] Read https://python.langchain.com/docs/get_started/introduction
+- [ ] Make sure it runs locally
+  - [ ] Understand the chain executions https://docs.langchain.com/docs/components/chains/chain
+- [x] Resolve mac VScode can't resolve package links.
+- [ ] Deploy the chat app!
 
 ## Running tests
 
