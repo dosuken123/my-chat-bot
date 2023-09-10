@@ -1,127 +1,118 @@
 """Load html from files, clean up, split, ingest into Weaviate."""
-from bs4 import BeautifulSoup as Soup
+
+from langchain.docstore.document import Document
+from langchain.document_transformers import Html2TextTransformer
+from langchain.text_splitter import MarkdownHeaderTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Weaviate
+from langchain.schema.runnable import Runnable
+import requests
 import weaviate
 import os
-from git import Repo
-import shutil
-
-from langchain.document_loaders.recursive_url_loader import RecursiveUrlLoader
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Weaviate
-from langchain.document_transformers import Html2TextTransformer
-from langchain.text_splitter import Language
-from langchain.document_loaders.generic import GenericLoader
-from langchain.document_loaders.parsers import LanguageParser
+import time
 from dotenv import load_dotenv
 
 load_dotenv()
 
-WEAVIATE_URL=os.environ["WEAVIATE_URL"]
-WEAVIATE_API_KEY=os.environ["WEAVIATE_API_KEY"]
-
-def ingest_repo():
-    repo_path = os.path.join(os.getcwd(), "test_repo")
-    if os.path.exists(repo_path):
-        shutil.rmtree(repo_path)
-
-    repo = Repo.clone_from("https://github.com/langchain-ai/langchain", to_path=repo_path)
-
-    loader = GenericLoader.from_filesystem(
-        repo_path+"/libs/langchain/langchain",
-        glob="**/*",
-        suffixes=[".py"],
-        parser=LanguageParser(language=Language.PYTHON, parser_threshold=500)
-    )
-    documents_repo = loader.load()
-
-    python_splitter = RecursiveCharacterTextSplitter.from_language(language=Language.PYTHON, 
-                                                                chunk_size=2000, 
-                                                                chunk_overlap=200)
-    texts = python_splitter.split_documents(documents_repo)
-    return texts
-
-def ingest_docs():
-    """Get documents from web pages."""
-
-    urls = [
-        # "https://www.streetfighter.com/6/character", # OK
-        # "https://www.streetfighter.com/6/character/rashid/frame",
-        "https://wiki.supercombo.gg/w/Street_Fighter_6/Luke" # OK
-        # https://streetfighter.fandom.com/wiki/Juri_Han#Biography
-        # "https://api.python.langchain.com/en/latest/api_reference.html#module-langchain",
-        # "https://python.langchain.com/docs/get_started", 
-        # "https://python.langchain.com/docs/use_cases",
-        # "https://python.langchain.com/docs/integrations",
-        # "https://python.langchain.com/docs/modules", 
-        # "https://python.langchain.com/docs/guides",
-        # "https://python.langchain.com/docs/ecosystem",
-        # "https://python.langchain.com/docs/additional_resources",
-        # "https://python.langchain.com/docs/community",
-    ]
-    
-    exclude_dirs = [
-        "Frame_data", "Combos", "Resources", "Matchups", "Strategy", "Data"
-    ]
-
-    documents = []
-    extractor = lambda x: Soup(x, "lxml").text
-    for j, url in enumerate(urls):
-        # max_depth = 2 if j == 0 else 10
-        max_depth = 1
-        loader = RecursiveUrlLoader(url=url,
-                                    max_depth=max_depth,
-                                    extractor=extractor,
-                                    prevent_outside=True,
-                                    ensure_trailing_slash=False,
-                                    exclude_dirs=exclude_dirs)
-        temp_docs = loader.load()           
-        # print(f"temp_docs: {temp_docs}")
-        documents += temp_docs
-        print("Loaded", len(temp_docs), "documents from", url)
-    
-    print("Loaded", len(documents), "documents from all URLs")
-    
-    html2text = Html2TextTransformer()
-    docs_transformed = html2text.transform_documents(documents)
-    
-    print("Loaded", len(documents), "documents from all URLs")
-    
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
-    print('before splitting', len(docs_transformed))
-    docs_transformed = text_splitter.split_documents(docs_transformed)
-    print('after splitting', len(docs_transformed))
-    
-    print('Debuging... end')
-    return
-
-    # repo_docs = ingest_repo()
-    # docs_transformed += repo_docs
-        
-    # # OPTION TO PICKLE
-    # print("pickle.dumping..")
-    # import pickle
-    # with open('docs_transformed.pkl', 'wb') as f:
-    #     pickle.dump(docs_transformed, f)
-        
-    # with open('docs_transformed.pkl', 'rb') as f:
-    #     docs_transformed = pickle.load(f)
-    
-    client = weaviate.Client(url=WEAVIATE_URL, auth_client_secret=weaviate.AuthApiKey(api_key=WEAVIATE_API_KEY))
+def _add_documents(docs: list[Document]) -> bool:
+    client = weaviate.Client(url=os.environ["WEAVIATE_URL"],
+                             auth_client_secret=weaviate.AuthApiKey(api_key=os.environ["WEAVIATE_API_KEY"]))
     client.schema.delete_class("LangChain_newest_idx") # delete the class if it already exists
 
-    embeddings = OpenAIEmbeddings(chunk_size=200) # rate limit
+    embeddings = OpenAIEmbeddings(chunk_size=200)
     weav = Weaviate(client=client, index_name="LangChain_newest_idx", text_key="text", embedding=embeddings, by_text=False)
 
     batch_size = 100 # to handle batch size limit 
-    for i in range(0, len(docs_transformed), batch_size):
-        batch = docs_transformed[i:i+batch_size]
-        print(f"i: {i}")
-        # import pdb; pdb.set_trace()
-        weav.add_documents(batch)
-        # Weaviate.add_documents(batch, embeddings, client=client, by_text=False, index_name="LangChain_newest_idx")
+    for i in range(0, len(docs), batch_size):
+        batch = docs[i:i+batch_size]
+        res = weav.add_documents(batch)
+        print(f"i: {i} res: {res}")
+    
+    return True
 
-    print("LangChain now has this many vectors", client.query.aggregate("LangChain_newest_idx").with_meta_count().do())
+def _split_documents(docs: list[Document]) -> list[Document]:
+    headers_to_split_on = [
+        ("#", "Header1"),
+        ("##", "Header2"),
+        ("###", "Header3"),
+        ("####", "Header4"),
+        ("#####", "Header5"),
+    ]
+
+    documents = []
+    
+    markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
+    
+    for d in docs:
+        md_header_splits = markdown_splitter.split_text(d.page_content)
+
+        # Appending the header values into the documentation.
+        # This seems producing better result in vector search
+        for d in md_header_splits:
+            metadata_str = ""
+            if d.metadata:
+                for h in headers_to_split_on:
+                    val = d.metadata.get(h[1])
+                    metadata_str += val if val else ""
+                    metadata_str += " "
+            d.page_content = metadata_str + "\n" + d.page_content
+            documents.append(d)
+
+    return documents
+
+def _transform_documents(docs: list[Document]) -> list[Document]:
+    html2text = Html2TextTransformer()
+    docs_transformed = html2text.transform_documents(docs)
+    return docs_transformed
+
+def _load_documents() -> list[Document]:
+    urls = ["https://wiki.supercombo.gg/w/Street_Fighter_6/Blanka",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Cammy",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Dhalsim",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/E.Honda",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Guile",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Jamie",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/JP",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Juri",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Kimberly",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Lily",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Luke",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Manon",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Marisa",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Rashid",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Zangief",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Controls",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/HUD",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Gauges",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Offense",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Defense",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Movement",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Game_Data",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/Glossary",
+            "https://wiki.supercombo.gg/w/Street_Fighter_6/FAQ"]
+
+    documents = []
+
+    for u in urls:
+        response = requests.get(u)
+        
+        if response.status_code != 200:
+            raise Exception(f"Requst failed with a status code: {response.status_code}. URL: {u}")
+
+        page_content = response.content.decode('utf-8')
+        documents.append(Document(page_content=page_content))
+
+    return documents
+
+def ingest_docs():
+    docs = _load_documents()
+    docs = _transform_documents(docs)
+    docs = _split_documents(docs)
+    _add_documents(docs)
     
 if __name__ == "__main__":
     ingest_docs()

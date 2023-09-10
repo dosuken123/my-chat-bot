@@ -150,7 +150,7 @@ def _get_retriever():
         text_key="text",
         embedding=embeddings,
         by_text=False,
-        attributes=["source"],
+        # attributes=["source"],
     )
     return weaviate_client.as_retriever(search_kwargs=dict(k=10))
 

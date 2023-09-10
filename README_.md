@@ -13,13 +13,13 @@
   - [x] Infer 
 - [x] Optimize the document loading part - Currently, the documents parses seem skewed.
 - [x] Enable Coplilot
-- [-] Apply for LangSmmith
+- [-] Apply for LangSmmith  
+- [x] Resolve mac VScode can't resolve package links.
+- [ ] Make sure it runs locally
+- [ ] Deploy the chat app!
 - [ ] Read https://docs.langchain.com/docs/
 - [ ] Read https://python.langchain.com/docs/get_started/introduction
-- [ ] Make sure it runs locally
   - [ ] Understand the chain executions https://docs.langchain.com/docs/components/chains/chain
-- [x] Resolve mac VScode can't resolve package links.
-- [ ] Deploy the chat app!
 
 ## Running tests
 
