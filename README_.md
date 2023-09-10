@@ -25,3 +25,37 @@
 
 `python -m pytest tests/`
 `python -m pytest --pdb  tests/`
+
+## Build docker image
+
+`docker build -t sf6-qa-chat .`
+
+```
+docker login
+docker tag sf6-qa-chat:latest shinyamaeda/sf6-qa-chat:latest
+docker push shinyamaeda/sf6-qa-chat:latest
+```
+
+## Run docker image
+
+```shell
+docker run -p 3000:3000 \
+           -p 8080:8080 \
+           -e WEAVIATE_URL="<input-your-secret>" \
+           -e WEAVIATE_API_KEY="<input-your-secret>" \
+           -e OPENAI_API_KEY="<input-your-secret>" \
+           sf6-qa-chat:latest
+```
+
+## Deploy docker image
+
+Use CloudRun
+
+Backend:
+  variables:
+    WEAVIATE_URL="<input-your-secret>"
+    WEAVIATE_API_KEY="<input-your-secret>"
+    OPENAI_API_KEY="<input-your-secret>"
+Frontend:
+  variables:
+    `NEXT_PUBLIC_API_BASE_URL` = "<backend-endpoint>"
