@@ -8,27 +8,24 @@ export function EmptyState(props: {
   }
   return (
     <div className="p-8 rounded bg-[#25252d] flex flex-col items-center">
-      <h1 className="text-4xl mb-4">Chat LangChain 🦜🔗</h1>
+      <h1 className="text-4xl mb-4">Street Fighter 6 AI  ➡️⬇️↘️👊</h1>
       <div>
-        Ask me anything about LangChain&apos;s{" "}
-        <a href="https://python.langchain.com/" target="_blank">
-          Python Documentation!
-        </a>{" "}
+        Ask me anything about Street Fighter 6!
       </div>
       <div className="flex w-full mt-12">
         <div onMouseUp={handleClick} className="p-4 mr-4 border rounded grow max-w-[50%] flex items-center justify-center text-center min-h-[84px] cursor-pointer hover:border-sky-600">
-          How do I use a RecursiveUrlLoader to load content from a page?
+          What kind of character is Luke?
         </div>
         <div onMouseUp={handleClick} className="p-4 ml-4 border rounded grow max-w-[50%] flex items-center justify-center text-center min-h-[84px] cursor-pointer hover:border-sky-600">
-          What is LangChain Expression Language?
+          How to do Hadouken?
         </div>
       </div>
       <div className="flex w-full mt-4">
         <div onMouseUp={handleClick} className="p-4 mr-4 border rounded grow max-w-[50%] flex items-center justify-center text-center min-h-[84px] cursor-pointer hover:border-sky-600">
-          What are some ways of doing retrieval augmented generation?
+          What's the frame data on Ryu's standing medium kick?
         </div>
         <div onMouseUp={handleClick} className="p-4 ml-4 border rounded grow max-w-[50%] flex items-center justify-center text-center min-h-[84px] cursor-pointer hover:border-sky-600">
-          How do I run a model locally?
+          What characters are in the game?
         </div>
       </div>
     </div>

@@ -15,8 +15,10 @@
 - [x] Enable Coplilot
 - [-] Apply for LangSmmith  
 - [x] Resolve mac VScode can't resolve package links.
-- [ ] Make sure it runs locally
-- [ ] Deploy the chat app!
+- [x] Make sure it runs locally
+- [x] Deploy the chat app!
+- [x] Fix the chat doesn't work in mobile
+- [ ] Setup DNS A record
 - [ ] Read https://docs.langchain.com/docs/
 - [ ] Read https://python.langchain.com/docs/get_started/introduction
   - [ ] Understand the chain executions https://docs.langchain.com/docs/components/chains/chain

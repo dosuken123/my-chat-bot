@@ -257,7 +257,7 @@ export function ChatWindow(props: {
             </div>
         </div>
 
-      <form onSubmit={() => sendMessage()} className="flex w-full">
+      <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex w-full">
         <textarea
           className="flex-grow mr-2 p-2 rounded max-h-[40px]"
           placeholder={placeholder}
