@@ -1,3 +1,17 @@
+## Do
+
+- [ ] Move chains into libs
+- [ ] Add tests to measure the score in bulk
+
+## Not now
+
+- [ ] Setup DNS A record
+- [ ] Read https://docs.langchain.com/docs/
+- [ ] Read https://python.langchain.com/docs/get_started/introduction
+  - [ ] Understand the chain executions https://docs.langchain.com/docs/components/chains/chains
+
+## Done
+
 - [x] Run chat-langchain locally
 - [-] Use Langchain from the fork (Otherwise I can't track the changes in LangChain)
 - [x] Understand RAG https://python.langchain.com/docs/modules/data_connection/
@@ -18,7 +32,3 @@
 - [x] Make sure it runs locally
 - [x] Deploy the chat app!
 - [x] Fix the chat doesn't work in mobile
-- [ ] Setup DNS A record
-- [ ] Read https://docs.langchain.com/docs/
-- [ ] Read https://python.langchain.com/docs/get_started/introduction
-  - [ ] Understand the chain executions https://docs.langchain.com/docs/components/chains/chain
