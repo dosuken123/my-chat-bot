@@ -30,10 +30,10 @@ class IngestSF6:
   def _add_documents(self, docs: list[Document]) -> bool:
     client = weaviate.Client(url=os.environ["WEAVIATE_URL"],
                              auth_client_secret=weaviate.AuthApiKey(api_key=os.environ["WEAVIATE_API_KEY"]))
-    client.schema.delete_class("LangChain_newest_idx") # delete the class if it already exists
+    client.schema.delete_class("Wiki_supercombo_gg_sf6") # delete the class if it already exists
 
     embeddings = OpenAIEmbeddings(chunk_size=200)
-    weav = Weaviate(client=client, index_name="LangChain_newest_idx", text_key="text", embedding=embeddings, by_text=False)
+    weav = Weaviate(client=client, index_name="Wiki_supercombo_gg_sf6", text_key="text", embedding=embeddings, by_text=False)
 
     batch_size = 100 # to handle batch size limit 
     for i in range(0, len(docs), batch_size):

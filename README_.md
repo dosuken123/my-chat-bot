@@ -30,9 +30,8 @@
 
 ## Build docker image
 
-`docker build -t sf6-qa-chat .`
-
 ```
+docker build -t sf6-qa-chat .
 docker login
 docker tag sf6-qa-chat:latest shinyamaeda/sf6-qa-chat:latest
 docker push shinyamaeda/sf6-qa-chat:latest

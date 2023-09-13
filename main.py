@@ -146,7 +146,7 @@ def _get_retriever():
     )
     weaviate_client = Weaviate(
         client=client,
-        index_name="LangChain_newest_idx",
+        index_name="Wiki_supercombo_gg_sf6",
         text_key="text",
         embedding=embeddings,
         by_text=False,
