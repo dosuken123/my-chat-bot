@@ -12,6 +12,7 @@ beautifulsoup4
 unstructured
 libmagic
 tiktoken
+cffi
 weaviate-client
 anthropic
 python-dotenv
