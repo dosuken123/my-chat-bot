@@ -90,3 +90,7 @@ Backend:
 Frontend:
   variables:
     `NEXT_PUBLIC_API_BASE_URL` = "<backend-public-endpoint>"
+
+## Colab
+
+https://colab.research.google.com/drive/1isnwAwIZ4CACdSBeH8IZO2xLP4iL4RiM?usp=sharing
