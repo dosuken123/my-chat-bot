@@ -8,8 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    matrix:
-      strategy:
+    strategy:
+      matrix:
         component: [frontend]
     steps:
       - name: Checkout code
