@@ -8,8 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
+    matrix:
+      strategy:
         component: [frontend, backend]
     steps:
       - name: Checkout code
@@ -20,7 +20,7 @@ jobs:
   
       - name: Build and Push Docker image
         env:
-          IMAGE_NAME: ${{ github.repository_owner }}/sf6-qa-chat-${{ matrix.component }}:latest
+          IMAGE_NAME: shinyamaeda/sf6-qa-chat-${{ matrix.component }}:latest
           DOCKERFILE_PATH: ${{ matrix.component }}
         run: |
           docker build -t $IMAGE_NAME $DOCKERFILE_PATH
