@@ -271,7 +271,7 @@ export function ChatWindow(props: {
             }
           }}
         />
-        <select
+        {/* <select
           id="modelType"
           className="bg-gray-800 text-white rounded p-2 mr-2 w-full sm:w-auto max-h-[40px]"
           value={model}
@@ -279,7 +279,7 @@ export function ChatWindow(props: {
         >
           <option value="openai">OpenAI</option>
           <option value="anthropic">Anthropic</option>
-        </select>
+        </select> */}
         <button
           type="submit"
           className="flex-shrink p-2 w-16 sm:w-auto bg-sky-600 rounded max-h-[40px]"
