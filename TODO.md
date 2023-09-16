@@ -2,6 +2,8 @@
 
 - [ ] Move chains into libs
 - [ ] Add tests to measure the score in bulk
+- [ ] Fix the window size on mobile UI
+- [ ] Include past/upcoming tornament information
 
 ## Not now
 

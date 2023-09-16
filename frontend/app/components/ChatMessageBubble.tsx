@@ -67,7 +67,7 @@ export function ChatMessageBubble(props: {
   return (
     <div className="mt-4 flex flex-col">
       <div
-        className={`${alignmentClassName} ${colorClassName} ${feedbackColor} rounded px-4 py-2 max-w-[80%] mb-1 flex break-words`}
+        className={`${alignmentClassName} ${colorClassName} ${feedbackColor} rounded px-4 py-2 mb-1 flex break-words`}
       >
         <div className="mr-2">{prefix}</div>
         <div
