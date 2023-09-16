@@ -1,9 +1,10 @@
-name: Build and Push Docker Images
+name: Build and Deploy
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allow manual triggering of the workflow
 
 jobs:
   build:
@@ -25,3 +26,12 @@ jobs:
         run: |
           docker build -t $IMAGE_NAME $DOCKERFILE_PATH
           docker push $IMAGE_NAME
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
+
+    steps:
+    - name: Deploy to Production
+      run: echo deploy
