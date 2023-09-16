@@ -1,8 +1,8 @@
 ## Do
 
+- [ ] Remove model selector
 - [ ] Move chains into libs
 - [ ] Add tests to measure the score in bulk
-- [ ] Fix the window size on mobile UI
 - [ ] Include past/upcoming tornament information
 
 ## Not now
@@ -34,3 +34,6 @@
 - [x] Make sure it runs locally
 - [x] Deploy the chat app!
 - [x] Fix the chat doesn't work in mobile
+- [x] Fix the window size on mobile UI
+- [x] Build and push to the docker hub from GitHub Action
+
