@@ -1,9 +1,8 @@
 ## Do
 
-- [ ] Remove model selector
-- [ ] Move chains into libs
-- [ ] Add tests to measure the score in bulk
 - [ ] Include past/upcoming tornament information
+- [ ] How to evaluate chains
+- [ ] Test Ragas https://blog.langchain.dev/evaluating-rag-pipelines-with-ragas-langsmith/
 
 ## Not now
 
@@ -36,4 +35,10 @@
 - [x] Fix the chat doesn't work in mobile
 - [x] Fix the window size on mobile UI
 - [x] Build and push to the docker hub from GitHub Action
-
+- [x] Remove model selector
+- [x] Learn the basic concept of LLamma Index
+- [x] Asked Beta access code for LangSmith
+- [x] Move chains into libs
+- [x] Add tests to measure the score in bulk => Maybe LangSmith is better?
+- [x] Try LangSmith. Walkthrough all of the features.... This is promising!
+- [x] Fix raiting and check on LangSmith

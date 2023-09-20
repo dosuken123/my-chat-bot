@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# client = Client()
+langsmith_client = Client()
 
 app = FastAPI()
 app.add_middleware(
@@ -221,7 +221,7 @@ async def send_feedback(request: Request):
         return {"result": "Feedback already recorded or no chat session found", "code": 400}
     data = await request.json()
     score = data.get("score")
-    client.create_feedback(run_id, "user_score", score=score)
+    langsmith_client.create_feedback(run_id, "user_score", score=score)
     feedback_recorded = True
     return {"result": "posted feedback successfully", "code": 200}
 
@@ -230,7 +230,7 @@ trace_url = None
 async def get_trace(request: Request):
     global run_id, trace_url
     if trace_url is None and run_id is not None:
-        trace_url = client.share_run(run_id)
+        trace_url = langsmith_client.share_run(run_id)
     if run_id is None:
         return {"result": "No chat session found", "code": 400}
     return trace_url if trace_url else {"result": "Trace URL not found", "code": 400}
