@@ -1,8 +1,27 @@
 ## Do
 
-- [ ] Include past/upcoming tornament information
+- [ ] Understand Retriever and Ingestion https://python.langchain.com/docs/modules/data_connection/retrievers.html
+  - [ ] This should be web framework like Ruby On Rails
+- [ ] A framework for Agent Server?
+  - [ ] Agent can execute a pipeline.
+  - [ ] Agent can interact with the external service.
+  - [ ] Agent can 
+  - [ ] Agent can accept requests from clients.
+  - [ ] Agent can be a web server.
+- [ ] Restructure the code
+- [ ] Combo info
+- [ ] Insert glossary always
+- [ ] Include past/upcoming CPT tornament information -
+  - e.g.
+  - "When is the next CPT event?"
+  - "Who was the winner of the recent CPT event?"
+  - "Show me the list of the 1st place of the past CPT events"
+  - "Show me the list of CPT points"
 - [ ] How to evaluate chains
-- [ ] Test Ragas https://blog.langchain.dev/evaluating-rag-pipelines-with-ragas-langsmith/
+- [ ] Let users import match video.
+  - [ ] Analyze the footage. Extract the chracterictics.
+  - [ ] Advice based on the characteristics.
+- [ ] How would you do recursive ingestion?
 
 ## Not now
 
@@ -10,6 +29,10 @@
 - [ ] Read https://docs.langchain.com/docs/
 - [ ] Read https://python.langchain.com/docs/get_started/introduction
   - [ ] Understand the chain executions https://docs.langchain.com/docs/components/chains/chains
+- [ ] Provide a link to the recent replay footage
+  - e.g.
+  - "Show me the link to the "
+- [ ] Test Ragas https://blog.langchain.dev/evaluating-rag-pipelines-with-ragas-langsmith/
 
 ## Done
 
